@@ -1,45 +1,69 @@
-# UNIT-PROJECT-1
+# 📦 Inventory Management System
 
+An interactive, integrated inventory management system built with **Python** using an advanced Terminal interface. It integrates AI-driven features and smart reporting to simplify sales and purchase operations, monitor stock levels, and support smart decision-making.
 
+---
 
-## Based on what you’ve learned until now , create a project of your choosing (impress us with your imagination) . This project must at least satisfy the following minimum requirements :
+## 🎯 System Objectives
 
-- Must be interactive on CLI.
-- Use your coding skills in Python accurately.
-- Organize Your Code into modules & (or packages)
-- Use git & Github to track changes in your code.
+- Simplify product management within inventory.
+- Reduce human errors during sales and purchase operations.
+- Generate analytical reports to support decision-making.
+- Utilize AI to forecast consumption and restocking needs.
+- Enhance user experience through intelligent and automated features.
 
-## Example Project :  An online Grocery Store :
+---
 
-#### Overview : An online store that sells fruits to customers. This online store has 2 main users. The customer and the manager of the store . Each one of them should be able to do the following tasks for the store to function properly . 
+## 👥 User Roles & Permissions
 
-### Features & User Stories
-#### As a customer I should be able to do the following :
-- Browse  Products . 
-- View the product info (summary, specs, price, quantity , etc.)
-- Search for Products.
-- Get recommendations for my next purchase based on my purchase history.
-- Add Products to the shopping cart .
-- Remove a product from the shopping cart.
-- List the products in my shopping cart. 
-- Continue to checkout . 
-- Fill in my address for delivery.
-- Get receipt of my purchases.
-- Check delivery status . 
+| Role             | Permissions                                                                 |
+|:----------------|:----------------------------------------------------------------------------|
+| **System Admin**   | Full access to all system features including user management.               |
+| **Inventory Staff**| Manage products, and record sales and purchase operations.                  |
+| **Read-Only User** | View data and reports only, without editing permissions.                    |
 
+---
 
+## 📑 Key Features
 
-#### Usage :
- Explain to the user how to use your project . 
- for example:
- - type in search product_name to search for a product.
- - type in list_products to show all the products in the grocery.
- - type in show product_name to get information about this product.
- - type in buy product_name to buy the product . 
- - and so on...
+### 📦 Product Management
+- Add, edit, delete, and list products.
+- Search products by name, barcode, or category.
+- Categorize products under specific classifications.
 
+### 💵 Sales & Purchase Operations
+- Record sales and automatically deduct stock quantities with barcode support.
+- Record purchases, increase quantities, and calculate tax.
+- Auto-generate invoices as CSV files for both sales and purchases.
 
-### For your project. Edit this README.md file to include your own project name,  overview, user stories, and usage. 
+### 📊 Reporting
+- Real-time inventory status report.
+- Manual report creation and export as PDF.
+- Auto-generated monthly reports emailed to management.
+- Custom reports upon request.
 
-### NOTE: before submitting the final project, please do the following command:
-`pip freeze > requirements.txt` to enable use to know & use the packages used in your project.
+### ⚙️ Warehouse Settings
+- Edit warehouse capacity, space, and dedicated shelves for products.
+
+---
+
+## 🤖 AI Features
+
+- **Smart Stock Depletion Alerts** based on consumption rates.
+- **Purchase Order Suggestions** predicting required quantities before running out.
+
+---
+
+## ⏳ Scheduled Tasks
+
+| Task                     | Frequency       | Description                                                       |
+|:-------------------------|:----------------|:------------------------------------------------------------------|
+| Generate Monthly Report   | End of each month| Sales, purchases, and expired/out-of-stock products summary.       |
+| Email Reports             | Daily / Weekly    | Auto-send reports to managers.                                     |
+| Stock Level Check         | Every morning     | Alert for low or out-of-stock items.                               |
+| Purchase Suggestions      | Weekly            | Recommend restocking quantities based on recent sales analysis.    |
+
+---
+
+## ER Diagram:
+![ER Diagram](https://github.com/user-attachments/assets/043f6ef3-c4d0-4898-8605-2845b85044b1)
