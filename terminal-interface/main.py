@@ -1,8 +1,10 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Header, Footer, Button, Static, Rule, DataTable
-from textual.containers import ScrollableContainer
+from textual.widgets import Header, Footer, Button, Static, Rule, DataTable, Input
+from textual.containers import ScrollableContainer, Container
 from textual.screen import Screen
 
+from database.models import User
+user = None
 
 # 🟩 الصفحة الرئيسية
 class HomePageScreen(Screen):
@@ -43,6 +45,9 @@ class ViewProductsScreen(Screen):
         yield Rule()
         yield DataTable()
         yield Static("Press 'b' to go back", classes="label")
+        yield Input(placeholder="First Name")
+        yield Button("Btn", variant="success")
+        yield Button("Btn", variant="error")
 
     def on_mount(self) -> None:
         table = self.query_one(DataTable)
@@ -52,14 +57,25 @@ class ViewProductsScreen(Screen):
     def action_go_back(self):
         self.app.pop_screen()
 
+class LoginPage(Screen):
+    
+    def compose(self):
+        yield Static("Login", id="Title")
+        yield Rule()
+        yield Static("User Name: ", classes="label")
+        yield Input(placeholder="Enter your username")
+        yield Static("Password: ", classes="label")
+        yield Input(placeholder="Enter your password")
+        with Container(id="container"):
+            yield Button("Submit", id="btn", variant="success")
 
-# 🔷 التطبيق الرئيسي
 class InventoryApp(App):
+    
     CSS_PATH = "style.css"
 
     def on_mount(self):
-        # أول شاشة تظهر
-        self.push_screen(HomePageScreen())
+        user = None
+        self.push_screen(LoginPage())
 
 
 if __name__ == "__main__":

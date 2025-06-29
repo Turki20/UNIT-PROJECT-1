@@ -1,12 +1,46 @@
 
-
 #Title {
     width: 100%;
     margin: 1;
+    padding: 1;
     content-align: center middle;
     text-style: bold;
+    background: lightblue;
+    color: black;
+}
+
+#container {
+    align: center top;
 }
 
 .label {
+    margin: 0 2 1 2;
+}
+
+Input {
     margin: 1;
 }
+
+#btn {
+    text-style: bold;
+    width: 25%;
+    margin: 1;
+} 
+
+
+
+
+/* ===== Messages / Success / Error Text ===== */
+
+.message {
+    margin: 1 2;
+    color: #10b981; /* أخضر */
+    text-style: bold;
+}
+
+.error {
+    margin: 1 2;
+    color: #f43f5e; /* أحمر وردي */
+    text-style: bold;
+}
+

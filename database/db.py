@@ -1,0 +1,62 @@
+
+import sqlite3
+
+# # connection object
+# conn = sqlite3.connect("inventory.db") # انشاء الاتصال او انشاء ملف قاعدة البيانات
+# # هو الاداة اللي تنفذ الاستعلامات
+# cursor = conn.cursor() # اللي يسمح لك تكتب وتقرا وتنفذ العمليات في الداتا بيس 
+
+# cursor.execute("q")
+
+# # هذا مهم في حال عدلت على بيانات في قاعدة البيانات لو ماسويته ماراح تتخزن
+# conn.commit()
+# # هذا بعد تسوي سيليكت يرجع لك كل البيانات على شكل list of tuples
+# cursor.fetchall()
+
+# # اغلاق قاعدة البيانات بعد العمل
+# conn.close()
+
+
+conn = sqlite3.connect("database/inventory.db")
+cursor = conn.cursor()
+
+def execute(q:str):
+    global conn
+    global cursor
+    cursor.execute(q)
+    conn.commit()
+
+def get_all(q:str):
+    global cursor
+    cursor.execute(q)
+    return cursor.fetchall()
+
+def clost_db():
+    global conn
+    conn.close()
+    
+    
+# cursor.execute(p1.add_product_query())
+# conn.commit()
+
+# cursor.execute(Product.delete_product_query(1))
+# conn.commit()
+
+# execute(Product.create_table_query())
+
+# # p = Product("iphon 14", "description", 0, 4500, 0.15, datetime.now().strftime("%d/%m/%Y"), datetime.now().strftime("%d/%m/%Y"))
+# # execute(p.add_product_query())
+
+# products = get_all(Product.get_all_products_query())
+# print(products)
+# result = Product.convert_to_Products(products)
+# for i in result:
+#     print(Product.get_product_by_id_query(i.id))
+#     print(get_all(Product.get_product_by_id_query(i.id)))
+
+# execute(User.create_table_query())
+
+# user = User("turki", "12345678", "Turki Ahmed", "turki@gmail.com", datetime.now().strftime("%d/%m/%Y"), datetime.now().strftime("%d/%m/%Y"))
+# execute(user.add_user_query())
+
+
