@@ -7,6 +7,8 @@ from textual import on
 from terminal_interface.homeScreen import HomePage
 from database.models import User
 from user import auth
+
+global user
 user = None
 
 
@@ -49,8 +51,8 @@ class InventoryApp(App):
     def on_mount(self):
         if user == None:
             self.install_screen(LoginPage(), "loginScreen")
-            #self.push_screen("loginScreen")
-            self.push_screen(HomePage())
+            self.push_screen("loginScreen")
+            #self.push_screen(HomePage())
 
 
 if __name__ == "__main__":

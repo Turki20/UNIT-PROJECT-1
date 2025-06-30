@@ -129,7 +129,7 @@ class Product():
                 quantity = {self.quantity},
                 price_per_unit = {self.price_per_unit},
                 tax_rate = {self.tax_rate},
-                updated_at = '{self.updated_at}'
+                updated_at = '{datetime.now().strftime("%d/%m/%Y")}'
             WHERE id = {self.id};
         '''
         return q
@@ -138,15 +138,53 @@ class User():
     
     roles = ["Admin", "InventoryStaff", "ReadOnly"]
     
-    def __init__(self, username:str, password:str, full_name:str, email:str, created_at:datetime, updated_at:datetime, role:str=roles[2], id:int=None):
-        self.username = username
-        self.password = password
-        self.full_name = full_name
-        self.role = role
-        self.email = email
-        self.created_at = created_at
-        self.updated_at = updated_at
+    def __init__(self, username: str, password: str, full_name: str, email: str,
+                 created_at: str, updated_at: str, role: str = roles[2], id: int = None):
+        self.set_username(username)
+        self.set_password(password)
+        self.set_full_name(full_name)
+        self.set_email(email)
+        self.set_role(role)
+        self.set_created_at(created_at)
+        self.set_updated_at(updated_at)
         self.id = id
+
+    # ===== Setters with Validation =====
+
+    def set_username(self, username: str):
+        if not isinstance(username, str) or len(username.strip()) < 3:
+            raise ValueError("Username must be at least 3 characters.")
+        self.username = username.strip()
+
+    def set_password(self, password: str):
+        if not isinstance(password, str) or len(password) < 5:
+            raise ValueError("Password must be at least 5 characters.")
+        self.password = password
+
+    def set_full_name(self, full_name: str):
+        if not isinstance(full_name, str) or len(full_name.strip()) < 5:
+            raise ValueError("Full name must be at least 5 characters.")
+        self.full_name = full_name.strip()
+
+    def set_email(self, email: str):
+        if not isinstance(email, str) or "@" not in email or "." not in email:
+            raise ValueError("Invalid email address.")
+        self.email = email.strip()
+
+    def set_role(self, role: str):
+        if role not in User.roles:
+            raise ValueError(f"Role must be one of: {', '.join(User.roles)}")
+        self.role = role
+
+    def set_created_at(self, created_at: str):
+        if not isinstance(created_at, str):
+            raise ValueError("created_at must be a string date.")
+        self.created_at = created_at
+
+    def set_updated_at(self, updated_at: str):
+        if not isinstance(updated_at, str):
+            raise ValueError("updated_at must be a string date.")
+        self.updated_at = updated_at
     
     
     @staticmethod
@@ -228,3 +266,127 @@ class User():
             users_objects.append(new_user)
         return users_objects
     
+class Transaction:
+    
+    def __init__(self, transaction_type:str, product_id:int, quantity:int, unit_price:float, total_price:float, tax_amount:float, transaction_date:datetime, user_id:int, invoice_file_path:str, transaction_id:int=None):
+        self.transaction_id = transaction_id
+        self.set_transaction_type(transaction_type)
+        self.set_product_id(product_id)
+        self.set_quantity(quantity)
+        self.set_unit_price(unit_price)
+        self.set_total_price(total_price)
+        self.set_tax_amount(tax_amount)
+        self.set_transaction_date(transaction_date)
+        self.set_user_id(user_id)
+        self.set_invoice_file_path(invoice_file_path)
+
+    # ===== Setters with Validation =====
+
+    def set_transaction_type(self, transaction_type:str):
+        valid_types = ["IN", "OUT"]
+        if transaction_type not in valid_types:
+            raise ValueError(f"Transaction type must be one of {valid_types}.")
+        self.transaction_type = transaction_type
+
+    def set_product_id(self, product_id:int):
+        if not isinstance(product_id, int) or product_id < 0:
+            raise ValueError("Product ID must be a positive integer.")
+        self.product_id = product_id
+
+    def set_quantity(self, quantity:int):
+        if not isinstance(quantity, int) or quantity < 0:
+            raise ValueError("Quantity must be a positive integer.")
+        self.quantity = quantity
+
+    def set_unit_price(self, unit_price:float):
+        unit_price = float(unit_price)
+        if unit_price < 0:
+            raise ValueError("Unit price must be a positive number.")
+        self.unit_price = unit_price
+
+    def set_total_price(self, total_price:float):
+        total_price = float(total_price)
+        if total_price < 0:
+            raise ValueError("Total price must be a positive number.")
+        self.total_price = total_price
+
+    def set_tax_amount(self, tax_amount:float):
+        tax_amount = float(tax_amount)
+        if tax_amount < 0:
+            raise ValueError("Tax amount must be a positive number.")
+        self.tax_amount = tax_amount
+
+    def set_transaction_date(self, transaction_date:datetime):
+        if not isinstance(transaction_date, str):
+            raise ValueError("Transaction date must be a string.")
+        self.transaction_date = transaction_date
+
+    def set_user_id(self, user_id:int):
+        if not isinstance(user_id, int) or user_id < 0:
+            raise ValueError("User ID must be a positive integer.")
+        self.user_id = user_id
+
+    def set_invoice_file_path(self, invoice_file_path:str):
+        if not isinstance(invoice_file_path, str):
+            raise ValueError("Invoice file path must be a string.")
+        self.invoice_file_path = invoice_file_path.strip()
+
+    # ===== SQL Queries =====
+
+    @staticmethod
+    def create_table_query() -> str:
+        q = '''
+            CREATE TABLE IF NOT EXISTS transaction_table (
+                transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                transaction_type TEXT NOT NULL,
+                product_id INTEGER,
+                quantity INTEGER,
+                unit_price REAL,
+                total_price REAL,
+                tax_amount REAL,
+                transaction_date TEXT,
+                user_id INTEGER,
+                invoice_file_path TEXT
+            );
+        '''
+        return q
+
+    def add_transaction_query(self) -> str:
+        q = f'''
+            INSERT INTO transaction_table (transaction_type, product_id, quantity, unit_price, total_price, tax_amount, transaction_date, user_id, invoice_file_path)
+            VALUES ('{self.transaction_type}', {self.product_id}, {self.quantity}, {self.unit_price}, {self.total_price}, {self.tax_amount}, '{self.transaction_date}', {self.user_id}, '{self.invoice_file_path}');
+        '''
+        return q
+
+    @staticmethod
+    def delete_transaction_query(transaction_id:int) -> str:
+        q = f'''
+            DELETE FROM transaction_table
+            WHERE transaction_id = {transaction_id};
+        '''
+        return q
+
+    @staticmethod
+    def get_all_transactions_query() -> str:
+        q = '''
+            SELECT * FROM transaction_table;
+        '''
+        return q
+
+    @staticmethod
+    def get_transaction_by_id_query(transaction_id:int) -> str:
+        q = f'''
+            SELECT * FROM transaction_table
+            WHERE transaction_id = {transaction_id};
+        '''
+        return q
+
+    @staticmethod
+    def convert_to_Transactions(transactions:list) -> list:
+        transaction_objects = []
+        for t in transactions:
+            new_transaction = Transaction(
+                t[1], t[2], t[3], t[4], t[5], t[6], t[7], t[8], t[9], t[0]
+            )
+            transaction_objects.append(new_transaction)
+        return transaction_objects

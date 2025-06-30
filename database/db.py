@@ -62,3 +62,22 @@ def clost_db():
 # user = User("turki", "12345678", "Turki Ahmed", "turki@gmail.com", datetime.now().strftime("%d/%m/%Y"), datetime.now().strftime("%d/%m/%Y"))
 # execute(user.add_user_query())
 
+# from models import Transaction
+
+# execute(Transaction.create_table_query())
+
+# t1 = Transaction(
+#     transaction_type="IN",
+#     product_id=1,
+#     quantity=10,
+#     unit_price=50.0,
+#     total_price=500.0,
+#     tax_amount=75.0,
+#     transaction_date="29/06/2025",
+#     user_id=2,
+#     invoice_file_path="invoices/inv001.pdf"
+# )
+
+# # execute(t1.add_transaction_query())
+# print(execute(Transaction.delete_transaction_query(1)))
+# print(get_all(Transaction.get_all_transactions_query()))

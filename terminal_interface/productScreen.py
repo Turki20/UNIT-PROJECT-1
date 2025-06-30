@@ -111,16 +111,48 @@ class DeleteProduct(Screen):
 
 class UpdateProduct(Screen):
     
+    @on(Button.Pressed, "#back_to_main")
     @on(Button.Pressed, "#back")
     def back_to_product_screen(self):
         self.app.pop_screen()
-    
-    @on(Button.Pressed, "#back_to_main")
-    def back_to_product_screen(self):
-        self.app.pop_screen()
         
+    @on(Button.Pressed)
+    def update_btn(self):
+        try:
+            product_id = int(self.query_one("#product_id").value)
+
+            product = Product.convert_to_Products(get_all(Product.get_product_by_id_query(product_id)))[0]
+
+            new_name = self.query_one("#name_input").value
+            new_desc = self.query_one("#desc_input").text
+            new_category = int(self.query_one("#category_input").value)
+            new_quantity = int(self.query_one("#quantity_input").value)
+            new_price = float(self.query_one("#price_input").value)
+            new_tax = float(self.query_one("#tax_input").value)
+
+            product.set_name(new_name)
+            product.set_desc(new_desc)
+            product.set_category_id(new_category)
+            product.set_quantity(new_quantity)
+            product.set_price_per_unit(new_price)
+            product.set_tax_rate(new_tax)
+            
+            execute(product.update_product_query())
+
+            msg = self.query_one("#feedback2")
+            msg.update("Updated successfully")
+            msg.set_class(True, "message")
+            msg.set_class(False, "error")
+
+        except Exception as e:
+            # عرض رسالة خطأ
+            msg = self.query_one("#feedback2")
+            msg.update(f" {e}")
+            msg.set_class(True, "error")
+            msg.set_class(False, "message")
+    
     @on(Button.Pressed, "#search")
-    def back_to_product_screen(self):
+    def update_product(self):
         product_id = self.query_one("#product_id").value
         try:
             product_id = int(product_id)
@@ -159,21 +191,24 @@ class UpdateProduct(Screen):
                 yield Button("Search", id="search", variant="warning", classes="w_m") 
     
         with ScrollableContainer(classes="container hide", id="container2"):
-            yield Static("Update Product", classes="label")
-
+            yield Static("Product Name: ", classes="label")
             yield Input(placeholder="Name", id="name_input")
+            yield Static("Descruption: ", classes="label")
             yield TextArea(id="desc_input")
+            yield Static("Category: ", classes="label")
             yield Input(placeholder="Category ID", id="category_input")
+            yield Static("Price per unit: ", classes="label")
             yield Input(placeholder="Price per Unit", id="price_input")
+            yield Static("Tax rate: ", classes="label")
             yield Input(placeholder="Tax Rate", id="tax_input")
+            yield Static("Quantity: ", classes="label")
             yield Input(placeholder="Quantity", id="quantity_input")
 
             with Container(classes="h justfybetween"):
                 yield Button("Back", classes="w_m", id="back_to_main")
                 yield Button("Save Changes", id="update_btn", variant="success", classes="w_m")
-            
-    
-    
+                yield Static(id="feedback2", classes="error")
+                   
 class AddProduct(Screen):
     
     @on(Button.Pressed, "#cancelProduct")
