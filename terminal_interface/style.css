@@ -1,0 +1,137 @@
+
+Screen{
+    background: black;
+}
+
+#header {
+    width: 100%;
+    height: 3;
+    align: center middle;
+    layout: horizontal;
+}
+#Title {
+    width: 30%;
+    padding: 1;
+    content-align: center middle;
+    text-style: bold;
+    background: #267cb1;
+    color: black;
+}
+#pageTitle {
+    content-align: center middle;
+    width: 70%;
+    background: #00304e;
+    height: 3;
+}
+
+.container{
+    align: center top;
+    width: 100%;
+    border: round #267cb1;
+}
+
+.label {
+    margin: 1 2 1 2;
+}
+
+Input {
+    margin: 1;
+    width: 100%;
+}
+
+.btn {
+    text-style: bold;
+    width: 25%;
+    margin: 1;
+} 
+
+.footer {
+    align: center bottom;
+    color: #267cb1;
+}
+
+.footer Static {
+    margin: 2;
+}
+
+.h {
+    layout: horizontal;
+    height: 25%;
+}
+
+.subcontainer {
+    width: 50%;
+    border: round #267cb1;
+}
+
+.subcontainer Static {
+    margin: 1;
+}
+
+#container {
+    align: right top;
+}
+.products {
+    height: 50%;
+}
+
+.justfybetween {
+    layout: grid;
+    grid-size: 5 1;
+}
+
+.w_m{
+    width: 100%;
+    margin: 2;
+}
+
+TextArea{
+    height: 30%;
+    margin: 1;
+}
+
+
+
+
+
+
+
+
+/* ===== Messages / Success / Error Text ===== */
+
+.message {
+    margin: 1 2;
+    color: green; /* أخضر */
+    text-style: bold;
+}
+
+.error {
+    margin: 1 2;
+    color: #f43f5e; /* أحمر وردي */
+    text-style: bold;
+}
+
+.hide {
+    display: none;
+}
+
+.block {
+    display: block;
+}
+
+.warning {
+    width: 100%;
+    text-style: bold;
+    color: red;
+    margin: 2;
+}
+
+.warning Button {
+    margin: 2;
+    color: black;
+}
+
+.center{
+    content-align: center middle;
+    align: center top;
+}

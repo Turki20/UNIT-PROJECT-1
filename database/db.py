@@ -36,17 +36,20 @@ def clost_db():
     conn.close()
     
     
+
 # cursor.execute(p1.add_product_query())
 # conn.commit()
 
 # cursor.execute(Product.delete_product_query(1))
 # conn.commit()
 
-# execute(Product.create_table_query())
+# # execute(Product.create_table_query())
+#from models import Product
+# from datetime import datetime
+# p = Product("iphon 14", "description", 0, 4500, 0.15, datetime.now().strftime("%d/%m/%Y"), datetime.now().strftime("%d/%m/%Y"))
+# execute(p.add_product_query())
 
-# # p = Product("iphon 14", "description", 0, 4500, 0.15, datetime.now().strftime("%d/%m/%Y"), datetime.now().strftime("%d/%m/%Y"))
-# # execute(p.add_product_query())
-
+# execute(Product.delete_product_query(6))
 # products = get_all(Product.get_all_products_query())
 # print(products)
 # result = Product.convert_to_Products(products)
@@ -58,5 +61,4 @@ def clost_db():
 
 # user = User("turki", "12345678", "Turki Ahmed", "turki@gmail.com", datetime.now().strftime("%d/%m/%Y"), datetime.now().strftime("%d/%m/%Y"))
 # execute(user.add_user_query())
-
 

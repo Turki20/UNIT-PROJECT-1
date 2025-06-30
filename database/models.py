@@ -5,15 +5,62 @@ class Product():
         
     def __init__(self, name:str, desc:str, category_id:int, price_per_unit:float, tax_rate:float, created_at:datetime, updated_at:datetime, quantity:int = 0, id:int=None):
         self.id = id
-        self.name = name
-        self.desc = desc
-        self.category_id = category_id
+        self.set_name(name)
+        self.set_desc(desc)
+        self.set_category_id(category_id)
+        self.set_quantity(quantity)
+        self.set_price_per_unit(price_per_unit)
+        self.set_tax_rate(tax_rate)
+        self.set_created_at(created_at)
+        self.set_updated_at(updated_at)
+        
+    
+    # ===== Setters with Validation =====
+
+    def set_name(self, name:str):
+        if not isinstance(name, str) or not name.strip() or len(name) < 2:
+            raise ValueError("Product name must be a non-empty string.")
+        self.name = name.strip()
+
+    def set_desc(self, desc:str):
+        if not isinstance(desc, str) or len(desc) < 3:
+            raise ValueError("Description must be a string.")
+        self.desc = desc.strip()
+
+    def set_category_id(self, category_id:int):
+        category = int(category_id)
+        if not isinstance(category, int) or category < 0: # تحتاج التحقق من جهه جدول الفئات
+            raise ValueError("Category ID must be a positive integer.")
+        self.category_id = category
+
+    def set_quantity(self, quantity:int):
+        if not isinstance(quantity, int) or quantity < 0:
+            raise ValueError("Quantity must be a positive integer.")
         self.quantity = quantity
-        self.price_per_unit = price_per_unit
-        self.tax_rate = tax_rate
+
+    def set_price_per_unit(self, price_per_unit:float):
+        price_per_unit = float(price_per_unit)
+        if not isinstance(price_per_unit, (int, float)) or price_per_unit < 0:
+            raise ValueError("Price per unit must be a positive number.")
+        self.price_per_unit = float(price_per_unit)
+
+    def set_tax_rate(self, tax_rate:float):
+        tax_rate = float(tax_rate)
+        if not isinstance(tax_rate, (int, float)) or not (0 <= tax_rate <= 1):
+            raise ValueError("Tax rate must be a number between 0 and 1.")
+        self.tax_rate = float(tax_rate)
+
+    def set_created_at(self, created_at:datetime): # edit
+        if not isinstance(created_at, str):
+            raise ValueError("created_at must be a datetime object.")
         self.created_at = created_at
+
+    def set_updated_at(self, updated_at:datetime): # edit
+        if not isinstance(updated_at, str):
+            raise ValueError("updated_at must be a datetime object.")
         self.updated_at = updated_at
-  
+    
+    
     @staticmethod
     def create_table_query() -> str:
         q = '''
