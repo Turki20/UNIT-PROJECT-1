@@ -29,14 +29,23 @@ def generate_invoice_csv(transaction: Transaction, product_name: str, save_dir="
         ])
     return filename
 
-def create_transaction_report(file_path, user_id=None):
-    content = f"Transaction invoice saved in: {file_path}" # edit --
+def create_transaction_report(file_path, type, user_id=None):
+    content = f"Saved in: {file_path}" # edit --
     created_at = datetime.now().strftime("%d/%m/%Y")
-    report = Report("Invoice", content, created_at, user_id)
+    report = Report(f"invoice: {type}", content, created_at, user_id)
     execute(report.add_report_query())
 
 class AddTransaction(Screen):
 
+    @on(Select.Changed, "#transaction_type")
+    def handle_transaction_type_change(self, event):
+        unit_price_input = self.query_one("#unit_price")
+        if event.value == "OUT":
+            unit_price_input.disabled = True 
+            unit_price_input.value = ""  
+        else:
+            unit_price_input.disabled = False
+            
     @on(Button.Pressed, "#cancelTransaction")
     def back_to_previous_page(self):
         self.app.pop_screen()
@@ -47,25 +56,31 @@ class AddTransaction(Screen):
             transaction_type = self.query_one("#transaction_type").value
             product_id = int(self.query_one("#product_id").value)
             quantity = int(self.query_one("#quantity").value)
-            unit_price = float(self.query_one("#unit_price").value)
-            tax_amount = quantity * unit_price *  0.15 # اخذ الضريبه من المنتج
             user_id = Session.current_user.id
             invoice_file_path = ""
 
-            total_price = (quantity * unit_price) + tax_amount
-
+            
             product = Product.convert_to_Products(get_all(Product.get_product_by_id_query(product_id)))
             if not product:
                 raise Exception("Product ID not found.")
 
             product = product[0]
             current_quantity = product.quantity
+            
             if transaction_type == "OUT":
                 if quantity > current_quantity:
                     raise Exception(f"Not enough stock. Available: {current_quantity}")
+                unit_price = product.price_per_unit  # السعر من المنتج
                 product.set_quantity(current_quantity - quantity)
-            else:  # IN
+            else:
+                unit_price = float(self.query_one("#unit_price").value)
                 product.set_quantity(current_quantity + quantity)
+                new_price_per_unit = (current_quantity * product.price_per_unit + quantity * unit_price) / (quantity + current_quantity)
+                product.set_price_per_unit(new_price_per_unit)
+                
+        
+            tax_amount = quantity * unit_price *  0.15 # اخذ الضريبه من المنتج
+            total_price = (quantity * unit_price) + tax_amount
                 
             execute(product.update_product_query())
 
@@ -83,10 +98,8 @@ class AddTransaction(Screen):
 
             execute(new_transaction.add_transaction_query())
 
-            # توليد فاتورة
             file_path = generate_invoice_csv(new_transaction, product.name)
 
-            # تحديث الفاتورة في transaction
             new_transaction.set_invoice_file_path(file_path)
             execute(f'''
                 UPDATE transaction_table
@@ -94,8 +107,7 @@ class AddTransaction(Screen):
                 WHERE transaction_id = (SELECT MAX(transaction_id) FROM transaction_table);
             ''')
 
-            # إنشاء تقرير
-            create_transaction_report(file_path, Session.current_user.id)
+            create_transaction_report(file_path, new_transaction.transaction_type,Session.current_user.id)
 
             msg = self.query_one("#msg", Static)
             msg.set_class(False, "error")

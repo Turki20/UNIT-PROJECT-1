@@ -22,7 +22,6 @@ class ViewProductsScreen(Screen):
             yield Static("Product Management", id="pageTitle")
         
         with ScrollableContainer(classes="container products"):
-            yield Static("Product Table", classes="label")
             yield DataTable()
         
         with Container(classes="h"):
@@ -31,8 +30,8 @@ class ViewProductsScreen(Screen):
                 yield Static("2. Delete a Product")
                 yield Static("3. Update a Product")
             with Container(classes="subcontainer"):
-                yield Static("4. Search for a Product")
-                yield Static("5. Categorize Products")
+                yield Static("4. Search for a Product", classes="gray")
+                yield Static("5. Categorize Products", classes="gray")
             
         with Container(classes="footer"):
             yield Static("Choose what you want by pressing the appropriate number on the keyboard.")

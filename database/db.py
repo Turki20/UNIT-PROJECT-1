@@ -1,5 +1,9 @@
 
 import sqlite3
+# import csv
+# from datetime import datetime 
+# from models import Product
+
 #from database.models import Transaction, Product, User, Report
 # # connection object
 # conn = sqlite3.connect("inventory.db") # انشاء الاتصال او انشاء ملف قاعدة البيانات
@@ -34,6 +38,51 @@ def get_all(q:str):
 def clost_db():
     global conn
     conn.close()
+    
+    
+# # قراءة ملف CSV
+# with open('Products.csv', newline='', encoding='utf-8') as csvfile:
+#     reader = csv.DictReader(csvfile)
+#     products = []
+#     count = 0
+
+#     for row in reader:
+#         if count >= 100:
+#             break
+
+#         name = row['Product Name']
+#         desc = row['Brand Desc']
+#         category_id = 0 
+#         price_per_unit = float(row['SellPrice'])
+#         tax_rate = 0.15
+#         now = datetime.now().strftime('%Y-%m-%d %H:%M')
+#         quantity = 0
+
+#         product = Product(
+#             name=name,
+#             desc=desc,
+#             category_id=category_id,
+#             price_per_unit=price_per_unit,
+#             tax_rate=tax_rate,
+#             created_at=now,
+#             updated_at=now,
+#             quantity=quantity
+#         )
+
+#         products.append(product)
+#         count += 1
+
+
+# # إضافة المنتجات لقاعدة البيانات
+# for product in products:
+#     query = product.add_product_query()
+#     execute(query)
+
+# # إغلاق قاعدة البيانات
+# clost_db()
+
+# print("تمت إضافة 100 منتج بنجاح.")
+    
     
     
 # def initial_database():
