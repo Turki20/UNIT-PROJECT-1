@@ -5,6 +5,7 @@ from textual.containers import Container, ScrollableContainer
 from terminal_interface.productScreen import ViewProductsScreen
 from terminal_interface.salesPurchaseScreen import AddTransaction
 from terminal_interface.userScreen import ViewUsersScreen
+from terminal_interface.reportsScreen import ViewReportsScreen
 from user.session import Session
 
 class HomePage(Screen):
@@ -12,6 +13,7 @@ class HomePage(Screen):
     BINDINGS = [
         ("1", "transactio_page", "Go to Transaction"),
         ("2", "product_page", "Go to View Products"),
+        ("3", "report_page", "Go to View Reprots"),
         ("5", "manage_users", "Go to View Users"),
         ("7", "logout", "Go to login"),
     ]
@@ -25,9 +27,9 @@ class HomePage(Screen):
             yield Static("1. Register a purchase or sale transaction", classes="label")
             yield Static("2. Product Management", classes="label")
             yield Static("3. Reports", classes="label")
-            yield Static("4. Alerts", classes="label")
+            yield Static("4. Alerts", classes="label gray")
             yield Static("5. Manage Users", classes="label")
-            yield Static("6. Warehouse Settings", classes="label")
+            yield Static("6. Warehouse Settings", classes="label gray")
             yield Static("7. Logout", classes="label")
 
             with Container(classes="footer"):
@@ -46,3 +48,6 @@ class HomePage(Screen):
         Session.current_user = None
         # self.app.push_screen(LoginPage())
         self.app.pop_screen()
+
+    def action_report_page(self):
+        self.app.push_screen(ViewReportsScreen())

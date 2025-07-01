@@ -135,3 +135,7 @@ TextArea{
     content-align: center middle;
     align: center top;
 }
+
+.gray {
+    color: gray;
+}

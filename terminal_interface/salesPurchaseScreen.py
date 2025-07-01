@@ -3,9 +3,37 @@ from textual.widgets import Static, Rule, DataTable, Input, Button, Select
 from textual.containers import Container, ScrollableContainer
 from textual import on
 from datetime import datetime
-from database.models import Transaction, Product
+from database.models import Transaction, Product, Report
 from database.db import execute, get_all
 from user.session import Session
+import csv
+import os
+
+def generate_invoice_csv(transaction: Transaction, product_name: str, save_dir="invoices"):
+    os.makedirs(save_dir, exist_ok=True)
+
+    filename = f"{save_dir}/invoice_{transaction.transaction_type}_{transaction.transaction_date.replace('/', '-')}_{transaction.product_id}.csv"
+    
+    with open(filename, mode="w", newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["Transaction Type", "Product", "Quantity", "Unit Price", "Total Price", "Tax Amount", "Date", "User ID"])
+        writer.writerow([
+            "Purchase" if transaction.transaction_type == "IN" else "Sale",
+            product_name,
+            transaction.quantity,
+            transaction.unit_price,
+            transaction.total_price,
+            transaction.tax_amount,
+            transaction.transaction_date,
+            transaction.user_id
+        ])
+    return filename
+
+def create_transaction_report(file_path, user_id=None):
+    content = f"Transaction invoice saved in: {file_path}" # edit --
+    created_at = datetime.now().strftime("%d/%m/%Y")
+    report = Report("Invoice", content, created_at, user_id)
+    execute(report.add_report_query())
 
 class AddTransaction(Screen):
 
@@ -20,9 +48,9 @@ class AddTransaction(Screen):
             product_id = int(self.query_one("#product_id").value)
             quantity = int(self.query_one("#quantity").value)
             unit_price = float(self.query_one("#unit_price").value)
-            tax_amount = 0.15 # اخذ الضريبه من المنتج
+            tax_amount = quantity * unit_price *  0.15 # اخذ الضريبه من المنتج
             user_id = Session.current_user.id
-            invoice_file_path = self.query_one("#invoice_file_path").value
+            invoice_file_path = ""
 
             total_price = (quantity * unit_price) + tax_amount
 
@@ -55,6 +83,20 @@ class AddTransaction(Screen):
 
             execute(new_transaction.add_transaction_query())
 
+            # توليد فاتورة
+            file_path = generate_invoice_csv(new_transaction, product.name)
+
+            # تحديث الفاتورة في transaction
+            new_transaction.set_invoice_file_path(file_path)
+            execute(f'''
+                UPDATE transaction_table
+                SET invoice_file_path = '{file_path}'
+                WHERE transaction_id = (SELECT MAX(transaction_id) FROM transaction_table);
+            ''')
+
+            # إنشاء تقرير
+            create_transaction_report(file_path, Session.current_user.id)
+
             msg = self.query_one("#msg", Static)
             msg.set_class(False, "error")
             msg.set_class(True, "message")
@@ -86,8 +128,6 @@ class AddTransaction(Screen):
             yield Input(placeholder="Quantity", id="quantity", type="integer")
             yield Static("Unit Price: ", classes="label")
             yield Input(placeholder="Unit Price", id="unit_price", type="number")
-            yield Static("Invoice File Path: ", classes="label")
-            yield Input(placeholder="Invoice Path (optional)", id="invoice_file_path")
 
         with Container(classes="h justfybetween"):
             yield Button("Back", variant="error", classes="w_m", id="cancelTransaction")

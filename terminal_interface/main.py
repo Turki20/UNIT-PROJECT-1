@@ -23,8 +23,7 @@ class LoginPage(Screen):
         check_user = auth.check_user_exist(username, password)
         if check_user != None:
             Session.current_user = check_user
-            self.app.install_screen(HomePage(), "homePage")
-            self.app.push_screen("homePage")
+            self.app.push_screen(HomePage())
         else:
             msg.update("user name or password was wrong, please try again.")
     

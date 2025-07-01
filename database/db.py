@@ -1,6 +1,6 @@
 
 import sqlite3
-
+#from database.models import Transaction, Product, User, Report
 # # connection object
 # conn = sqlite3.connect("inventory.db") # انشاء الاتصال او انشاء ملف قاعدة البيانات
 # # هو الاداة اللي تنفذ الاستعلامات
@@ -36,9 +36,12 @@ def clost_db():
     conn.close()
     
     
-def initial_database():
-    pass
-
+# def initial_database():
+#     execute(Report.create_table_query())
+#     execute(Transaction.create_table_query())
+#     execute(User.create_table_query())
+#     execute(Product.create_table_query())
+    
 # cursor.execute(p1.add_product_query())
 # conn.commit()
 
@@ -83,3 +86,17 @@ def initial_database():
 # # execute(t1.add_transaction_query())
 # print(execute(Transaction.delete_transaction_query(1)))
 # print(get_all(Transaction.get_all_transactions_query()))
+
+
+# from models import Report
+
+# execute(Report.create_table_query())
+
+# new_report = Report("test", "test content", "12/12/2020", 7)
+# execute(new_report.add_report_query())
+
+
+# report = Report.convert_to_Reports(get_all(Report.get_report_by_id_query(3)))[0]
+# print(get_all(Report.get_all_reports_query()))
+
+# print(report.created_at)

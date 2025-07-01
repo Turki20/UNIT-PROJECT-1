@@ -1,6 +1,6 @@
 
 from datetime import datetime
-# from database.db import get_all
+from database.db import get_all
 
 class Product():
         
@@ -404,3 +404,97 @@ class Transaction:
             )
             transaction_objects.append(new_transaction)
         return transaction_objects
+
+class Report:
+    
+    def __init__(self, report_type: str, content: str, created_at: str, created_by: int = None, report_id: int = None):
+        self.report_id = report_id
+        self.set_report_type(report_type)
+        self.set_content(content)
+        self.set_created_at(created_at)
+        self.set_created_by(created_by)
+
+    # ===== Setters with Validation =====
+    
+    def set_report_type(self, report_type: str):
+        if not isinstance(report_type, str) or report_type.strip() == "":
+            raise ValueError("Report type must be a non-empty string.")
+        self.report_type = report_type.strip()
+
+    def set_content(self, content: str):
+        if not isinstance(content, str) or content.strip() == "":
+            raise ValueError("Content must be a non-empty string.")
+        self.content = content.strip()
+
+    def set_created_at(self, created_at: str):
+        if not isinstance(created_at, str) or created_at.strip() == "":
+            raise ValueError("Created_at must be a valid string (date).")
+        self.created_at = created_at.strip()
+
+    def set_created_by(self, created_by: int):
+        if created_by is not None and (not isinstance(created_by, int) or created_by < 0):
+            raise ValueError("Created_by must be a positive integer or None.")
+        self.created_by = created_by
+
+    # ===== SQL Queries =====
+
+    @staticmethod
+    def create_table_query() -> str:
+        q = '''
+            CREATE TABLE IF NOT EXISTS report (
+                report_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                report_type TEXT NOT NULL,
+                content TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                created_by INTEGER
+            );
+        '''
+        return q
+
+    def add_report_query(self) -> str:
+        created_by_value = "NULL" if self.created_by is None else str(self.created_by)
+        q = f'''
+            INSERT INTO report (report_type, content, created_at, created_by)
+            VALUES ('{self.report_type}', '{self.content}', '{self.created_at}', {created_by_value});
+        '''
+        return q
+
+    @staticmethod
+    def delete_report_query(report_id: int) -> str:
+        q = f'''
+            DELETE FROM report
+            WHERE report_id = {report_id};
+        '''
+        return q
+
+    @staticmethod
+    def get_all_reports_query() -> str:
+        q = '''
+            SELECT * FROM report;
+        '''
+        return q
+
+    @staticmethod
+    def get_report_by_id_query(report_id: int) -> str:
+        q = f'''
+            SELECT * FROM report
+            WHERE report_id = {report_id};
+        '''
+        return q
+
+    @staticmethod
+    def convert_to_Reports(reports: list) -> list:
+        '''
+        Example:
+        [
+            (1, 'Sales Report', 'Content here...', '2024-06-20', 3),
+            (2, 'Inventory Summary', 'Inventory details...', '2024-06-21', None)
+        ]
+        '''
+        report_objects = []
+        for r in reports:
+            new_report = Report(
+                r[1], r[2], r[3], r[4], r[0]
+            )
+            report_objects.append(new_report)
+        return report_objects
