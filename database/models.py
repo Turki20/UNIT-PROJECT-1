@@ -1,5 +1,6 @@
 
 from datetime import datetime
+# from database.db import get_all
 
 class Product():
         
@@ -150,7 +151,6 @@ class User():
         self.id = id
 
     # ===== Setters with Validation =====
-
     def set_username(self, username: str):
         if not isinstance(username, str) or len(username.strip()) < 3:
             raise ValueError("Username must be at least 3 characters.")
@@ -265,6 +265,20 @@ class User():
             )
             users_objects.append(new_user)
         return users_objects
+    
+    @staticmethod
+    def check_username_is_exist(username:str):
+        if not isinstance(username, str) or len(username.strip()) < 3:
+            raise ValueError("Username must be a non-empty string of at least 3 characters.")
+
+        # تحقق من قاعدة البيانات: هل يوجد مستخدم بنفس الاسم؟
+        existing_users = get_all(f"SELECT * FROM user WHERE username = '{username}'")
+
+        # لو فيه مستخدم بنفس الاسم ID غير حالي — ارفض
+        if len(existing_users) > 0:
+            raise ValueError("Username already exists. Please choose a different one.")
+
+        return False
     
 class Transaction:
     

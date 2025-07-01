@@ -5,6 +5,7 @@ from textual import on
 from datetime import datetime
 from database.models import Transaction, Product
 from database.db import execute, get_all
+from user.session import Session
 
 class AddTransaction(Screen):
 
@@ -20,7 +21,7 @@ class AddTransaction(Screen):
             quantity = int(self.query_one("#quantity").value)
             unit_price = float(self.query_one("#unit_price").value)
             tax_amount = 0.15 # اخذ الضريبه من المنتج
-            user_id = 1
+            user_id = Session.current_user.id
             invoice_file_path = self.query_one("#invoice_file_path").value
 
             total_price = (quantity * unit_price) + tax_amount

@@ -7,9 +7,10 @@ from textual import on
 from terminal_interface.homeScreen import HomePage
 from database.models import User
 from user import auth
+from user.session import Session
 
-global user
-user = None
+
+Session.current_user = None
 
 
 class LoginPage(Screen):
@@ -21,16 +22,14 @@ class LoginPage(Screen):
         msg = self.query_one("#massege", Static)
         check_user = auth.check_user_exist(username, password)
         if check_user != None:
-            global user
-            user = check_user
+            Session.current_user = check_user
             self.app.install_screen(HomePage(), "homePage")
             self.app.push_screen("homePage")
         else:
             msg.update("user name or password was wrong, please try again.")
     
     def compose(self):
-        global user
-        user = None
+        Session.current_user = None
         with Container(id="header"):
             yield Static("Inventory Management System", id="Title")
             yield Static("Login Page", id="pageTitle")
@@ -49,7 +48,7 @@ class InventoryApp(App):
     CSS_PATH = "style.css"
 
     def on_mount(self):
-        if user == None:
+        if Session.current_user == None:
             self.install_screen(LoginPage(), "loginScreen")
             self.push_screen("loginScreen")
             #self.push_screen(HomePage())

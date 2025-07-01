@@ -36,6 +36,8 @@ def clost_db():
     conn.close()
     
     
+def initial_database():
+    pass
 
 # cursor.execute(p1.add_product_query())
 # conn.commit()

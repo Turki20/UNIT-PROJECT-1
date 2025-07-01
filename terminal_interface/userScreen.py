@@ -71,6 +71,7 @@ class AddUserScreen(Screen):
             updated_at = created_at
 
             new_user = User(username, password, full_name, email, created_at, updated_at, role)
+            User.check_username_is_exist(username)
             execute(new_user.add_user_query())
 
             msg.set_class(True, "message")
@@ -83,9 +84,6 @@ class AddUserScreen(Screen):
             msg.update(f"{e}")
 
     def compose(self):
-        with Container(id="header"):
-            yield Static("Add New User", id="Title")
-
         with ScrollableContainer(classes="container"):
             yield Static("Username:", classes="label")
             yield Input(placeholder="Username", id="username")
@@ -99,8 +97,10 @@ class AddUserScreen(Screen):
             yield Input(placeholder="Role", id="role")
 
         with Container(classes="h justfybetween"):
-            yield Button("Cancel", variant="error", id="cancel", classes="w_m")
+            yield Button("Back", variant="error", id="cancel", classes="w_m")
+            yield Static()
             yield Static("", id="msg", classes="error")
+            yield Static()
             yield Button("Add", variant="success", id="add", classes="w_m")
 
 class DeleteUserScreen(Screen):
@@ -135,12 +135,15 @@ class DeleteUserScreen(Screen):
             yield Input(placeholder="User ID", id="user_id", type="integer")
 
             with Container(classes="h justfybetween"):
-                yield Button("Back", id="back", variant="error", classes="w_m")
+                yield Button("Back", id="back", variant="warning", classes="w_m")
+                yield Static()
                 yield Static("", id="msg", classes="error")
+                yield Static()  
                 yield Button("Delete", id="delete", variant="error", classes="w_m")
 
 class UpdateUserScreen(Screen):
 
+    @on(Button.Pressed, "#cancel")
     @on(Button.Pressed, "#back")
     def back(self):
         self.app.pop_screen()
@@ -160,6 +163,13 @@ class UpdateUserScreen(Screen):
             self.query_one("#fullname").value = user[3]
             self.query_one("#email").value = user[4]
             self.query_one("#role").value = user[5]
+            
+            top = self.query_one("#search_content")
+            top.set_class(True, "hide")
+            
+            bottom = self.query_one("#update_content")
+            bottom.set_class(True, "block")
+            bottom.set_class(False, "hide")
 
         except Exception as e:
             msg.set_class(True, "error")
@@ -167,7 +177,7 @@ class UpdateUserScreen(Screen):
 
     @on(Button.Pressed, "#update")
     def update_user(self):
-        msg = self.query_one("#msg")
+        msg = self.query_one("#msg2")
         try:
             user_id = int(self.query_one("#user_id").value)
             if len(get_all(User.get_user_by_id_query(user_id))) == 0:
@@ -181,6 +191,7 @@ class UpdateUserScreen(Screen):
             updated_at = datetime.now().strftime("%d/%m/%Y")
 
             updated_user = User(username, password, full_name, email, "2025-01-01", updated_at, role, id=user_id)
+            User.check_username_is_exist(username)
             execute(updated_user.update_user_query())
 
             msg.set_class(True, "message")
@@ -193,19 +204,18 @@ class UpdateUserScreen(Screen):
             msg.update(str(e))
 
     def compose(self):
-        with Container(id="header"):
-            yield Static("Update User", id="Title")
-
-        with Container(classes="container center"):
+        with Container(classes="container center", id="search_content"):
             yield Static("Enter User ID:", classes="label")
             yield Input(placeholder="User ID", id="user_id", type="integer")
 
             with Container(classes="h justfybetween"):
                 yield Button("Back", id="back", variant="error", classes="w_m")
+                yield Static() 
                 yield Static("", id="msg", classes="error")
+                yield Static() 
                 yield Button("Search", id="search", variant="warning", classes="w_m")
 
-        with ScrollableContainer(classes="container"):
+        with ScrollableContainer(classes="container hide", id="update_content"):
             yield Static("Username:", classes="label")
             yield Input(id="username")
             yield Static("Password:", classes="label")
@@ -218,5 +228,9 @@ class UpdateUserScreen(Screen):
             yield Input(id="role")
 
             with Container(classes="h justfybetween"):
+                yield Button("Back", id="cancel", variant="error", classes="w_m")
+                yield Static() 
+                yield Static("", id="msg2", classes="error")
+                yield Static() 
                 yield Button("Update", id="update", variant="success", classes="w_m")
 
