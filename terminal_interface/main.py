@@ -5,7 +5,8 @@ from textual.screen import Screen
 from textual import on
 
 from terminal_interface.homeScreen import HomePage
-from database.models import User
+from database.models import User, Product, Transaction, Report
+from database.db import execute
 from user import auth
 from user.session import Session
 
@@ -54,4 +55,12 @@ class InventoryApp(App):
 
 
 if __name__ == "__main__":
+    execute(Product.create_table_query())
+    execute(User.create_table_query())
+    execute(Transaction.create_table_query())
+    execute(Report.create_table_query())
+    
+    # default User
+    new_user = User("admin", "12345", "admin", "admin@gmail.com", "0-0-2000", "0-0-2000")
+    execute(new_user.add_user_query())
     InventoryApp().run()
